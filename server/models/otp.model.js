@@ -18,7 +18,7 @@ const otpSchema = new mongoose.Schema({
 });
 
 // after 5 minutes, delete otp
-otpSchema.index({ createdAt: 1 }, { expireAfterSeconds: 30 });
+otpSchema.index({ createdAt: 1 }, { expireAfterSeconds: 300 });
 
 const Otp = mongoose.model("otp", otpSchema);
 module.exports = Otp;

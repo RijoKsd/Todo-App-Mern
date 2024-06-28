@@ -10,7 +10,6 @@ const otpModel = require("../models/otp.model");
 const generateOTP = () => {
   return crypto.randomInt(100000, 1000000).toString();
 };
- 
 
 const register = async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -74,6 +73,7 @@ const login = async (req, res) => {
     return res.status(500).json({ message: "Server Error" });
   }
 };
+
 const verifyEmail = async (req, res) => {
   const { email } = req.body;
   if (!email) {
@@ -107,24 +107,50 @@ const verifyEmail = async (req, res) => {
 };
 
 const verifyOtp = async (req, res) => {
-    const {email, otp} = req.body;
-    if(!email || !otp){
-        return res.status(400).json({message:"All fields are required"});
+  const { email, otp } = req.body;
+  if (!email || !otp) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+  try {
+    const existingOtp = await otpModel.findOne({ email });
+    if (!existingOtp) {
+      return res.status(400).json({ message: "OTP does not exist for email" });
+    }
+    if (existingOtp.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    // delete otp
+    await otpModel.findOneAndDelete({ email });
+    return res.status(200).json({ message: "OTP verified successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+const resetPassword = async (req, res) => {
+    const { email, password,  confirmPassword} = req.body;
+    if (!email || !password || !confirmPassword) {
+      return res.status(400).json({ message: "All fields are required" });
     }
     try{
-        const existingOtp = await otpModel.findOne({email});
-        if(!existingOtp){
-            return res.status(400).json({message:"OTP does not exist for email"});
+        const user = await userModel.findOne ({ email });
+        if (!user){
+            return res.status(400).json({ message: "User does not exist" });
         }
-        if(existingOtp.otp !== otp){
-            return res.status(400).json({message:"Invalid OTP"});
+        if(password.length < 6){
+            return res.status(400).json({ message: "Password must be atleast 6 characters" });
         }
-
+        if (password !== confirmPassword){
+            return res.status(400).json({ message: "Password do not match" });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await  user.updateOne({ password: hashedPassword });
+        return res.status(200).json({ message: "Password reset successfully" });
     }catch(err){
         console.error(err);
-        return res.status(500).json({message:"Server Error"});
+        return res.status(500).json({ message: "Server Error" });
     }
 };
-const resetPassword = async (req, res) => {};
 
 module.exports = { register, login, verifyEmail, resetPassword, verifyOtp };
