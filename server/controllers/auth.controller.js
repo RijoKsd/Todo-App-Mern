@@ -5,11 +5,13 @@ const cloudinary = require("../utils/cloudinary.utils");
 const generateJwtToken = require("../utils/generateToken");
 const sendEmail = require("../utils/nodemailer.utils");
 const crypto = require("crypto");
+const otpModel = require("../models/otp.model");
 
 const generateOTP = () => {
-    return crypto.randomInt(100000, 1000000).toString();
-}; 
+  return crypto.randomInt(100000, 1000000).toString();
+};
  
+
 const register = async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
   const image = req?.file?.path;
@@ -73,8 +75,56 @@ const login = async (req, res) => {
   }
 };
 const verifyEmail = async (req, res) => {
-    const {email} = req.body;
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+  try {
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+    const otp = generateOTP();
+
+    // expire otp after 1 minute
+    const expireAt = new Date(Date.now() + 60 * 1000);
+
+    // check if otp exists for email
+    const otpExists = await otpModel.findOne({ email });
+    if (otpExists) {
+      await otpModel.findOneAndUpdate({ email }, { otp });
+    } else {
+      const newOtp = new otpModel({ email, otp });
+      await newOtp.save();
+    }
+    await sendEmail(email, otp);
+
+    return res.status(200).json({ message: "OTP sent to email", otp, email });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+const verifyOtp = async (req, res) => {
+    const {email, otp} = req.body;
+    if(!email || !otp){
+        return res.status(400).json({message:"All fields are required"});
+    }
+    try{
+        const existingOtp = await otpModel.findOne({email});
+        if(!existingOtp){
+            return res.status(400).json({message:"OTP does not exist for email"});
+        }
+        if(existingOtp.otp !== otp){
+            return res.status(400).json({message:"Invalid OTP"});
+        }
+
+    }catch(err){
+        console.error(err);
+        return res.status(500).json({message:"Server Error"});
+    }
 };
 const resetPassword = async (req, res) => {};
 
-module.exports = { register, login, verifyEmail, resetPassword };
+module.exports = { register, login, verifyEmail, resetPassword, verifyOtp };
