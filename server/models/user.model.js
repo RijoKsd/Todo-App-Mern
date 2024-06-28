@@ -11,16 +11,21 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       lowercase: true,
-      
     },
-    image:{
-        type:String,
-        // required:true
+    image: {
+      type: String,
+      // required:true
     },
     password: {
       type: String,
       required: true,
     },
+    // todo: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Todo",
+    //   },
+    // ],
   },
   { timestamps: true }
 );
