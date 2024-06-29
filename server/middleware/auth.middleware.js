@@ -15,8 +15,9 @@ const verifyToken = async (req,res, next)=>{
                 return res.status(401).json({message:"Token is not valid"})
             }
             req.user = user;
-            console.log(req.user,"req.user");
-            next();
+             next();
+
+             
 
         });
     }catch(err){
