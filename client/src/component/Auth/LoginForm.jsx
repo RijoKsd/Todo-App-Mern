@@ -1,33 +1,48 @@
 import { useState } from "react";
-import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import ForgotPasswordForm from  "./ForgetPasswordForm" // Import ForgotPasswordForm component
-// import OTPVerification from "./OTPVerification"; // Import OTPVerification component
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import ForgotPasswordForm from "./ForgetPasswordForm";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import axios from "axios";
+
+const loginSchema = yup.object().shape({
+  email: yup.string().email().required("Email is required"),
+  password: yup.string().required("Password is required"),
+});
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const [showForgotPassword, setShowForgotPassword] = useState(false); // State to manage
+
+  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(loginSchema),
   });
 
-  const [showError, setShowError] = useState(false); // State to manage error display
-  const [showForgotPassword, setShowForgotPassword] = useState(false); // State to manage showing forgot password form
+  const onSave = async (data) => {
+    setLoading(true);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Implement your login logic here
-    // For example, you can check credentials, authenticate user, etc.
-    console.log("Form submitted:", formData);
-
-    // For demonstration, show error message if login fails
-    setShowError(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        data
+      );
+      console.log(response.data);
+      alert(response?.data?.message);
+      setLoading(false);
+      reset();
+    } catch (error) {
+      if (error.response) {
+        alert(error.response?.data?.message);
+      }
+      setLoading(false);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -35,32 +50,23 @@ const LoginPage = () => {
   };
 
   return (
-    <Container>
-      <Row className="d-flex align-items-center justify-content-center vh-100">
-        <Col md={6}>
-          <div className="bg-white p-4 rounded shadow">
+    <Container className="form-container p-4 bg-white rounded shadow mb-2">
+      <Row>
+        <Col>
+          <div>
             <h2 className="text-center mb-4">Login</h2>
-            {showError && (
-              <Alert
-                variant="danger"
-                onClose={() => setShowError(false)}
-                dismissible
-              >
-                Invalid email or password. Please try again.
-              </Alert>
-            )}
+
             {!showForgotPassword ? (
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={handleSubmit(onSave)}>
                 <Form.Group controlId="formEmail">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
                     type="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                    {...register("email")}
                     placeholder="Enter your email"
-                    required
                   />
+                  <p className="text-danger">{errors.email?.message}</p>
                 </Form.Group>
 
                 <Form.Group controlId="formPassword">
@@ -68,15 +74,15 @@ const LoginPage = () => {
                   <Form.Control
                     type="password"
                     name="password"
-                    value={formData.password}
-                    onChange={handleChange}
+                    {...register("password")}
                     placeholder="Enter your password"
-                    required
                   />
+                  <p className="text-danger">{errors.password?.message}</p>
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className="w-100 mt-3">
-                  Login
+                  {loading ? "Checking user..." : "Login"}
+                 
                 </Button>
               </Form>
             ) : (
@@ -85,29 +91,29 @@ const LoginPage = () => {
             )}
 
             <div className="mt-3 text-center">
-                {
-                    !showForgotPassword ? (
-                        <p
-                        className="text-primary"
-                        onClick={handleForgotPassword}
-                        style={{ cursor: "pointer" }}
-                        >
-                        Forgot password?
-                        </p>
-                    ) : (
-                        <p
-                        className="text-primary"
-                        onClick={() => setShowForgotPassword(false)}
-                        style={{ cursor: "pointer" }}
-                        >
-                        Back to login
-                        </p>
-                    )
-                }
-             
-             
+              {!showForgotPassword ? (
+                <Link
+                  // to="/forgot-password"
+                  className="text-primary"
+                  onClick={handleForgotPassword}
+                  style={{ cursor: "pointer" }}
+                >
+                  Forgot password?
+                </Link>
+              ) : (
+                <Link
+                  className="text-primary"
+                  onClick={() => setShowForgotPassword(false)}
+                  style={{ cursor: "pointer" }}
+                >
+                  Back to login
+                </Link>
+              )}
+
               <span> | </span>
-              <p className="text-primary ml-3">Create an account</p>
+              <Link to="/register" className="text-primary ml-3">
+                Create an account
+              </Link>
             </div>
           </div>
         </Col>

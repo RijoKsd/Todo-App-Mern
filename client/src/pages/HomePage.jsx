@@ -1,6 +1,8 @@
 import { Container, Row, Col } from "react-bootstrap";
 import AboutContent from "../component/AboutContent";
 import RegisterForm from "../component/Auth/RegisterForm";
+import LoginPage from "../component/Auth/LoginForm";
+import { Outlet } from "react-router-dom";
 
 const HomePage = () => {
   return (
@@ -11,7 +13,7 @@ const HomePage = () => {
             <AboutContent />
           </Col>
           <Col md={6}>
-            <RegisterForm />
+           <Outlet />
           </Col>
         </Row>
       </Container>

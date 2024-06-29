@@ -98,10 +98,10 @@ const verifyEmail = async (req, res) => {
     }
     await sendEmail(email, otp);
 
-    return res.status(200).json({ message: "OTP sent to email", otp, email });
+    return res.status(200).json({ message: "OTP sent to email", email,success:true });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server Error", success:false });
   }
 };
 

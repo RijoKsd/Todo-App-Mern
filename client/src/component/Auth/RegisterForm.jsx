@@ -1,46 +1,80 @@
-import  { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-// import { Link } from "react-router-dom"; // Assuming you're using React Router for navigation
-import "../styles.css";
+import { Link } from "react-router-dom";
+import axios from "axios";
+
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useState } from "react";
+
+const userSchema = yup.object().shape({
+  name: yup.string().required("Name is required"),
+  email: yup.string().email().required("Email is required"),
+  password: yup.string().required("Password is required"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords must match"),
+  image: yup.mixed().required("Profile image is required"),
+});
 
 const RegisterForm = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    profileImage: null,
-    imagePreviewUrl: "",
+  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(userSchema),
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   const reader = new FileReader();
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setFormData({
+  //       ...formData,
+  //       image: file,
+  //       imagePreviewUrl: reader.result,
+  //     });
+  //   };
 
-    reader.onloadend = () => {
-      setFormData({
-        ...formData,
-        profileImage: file,
-        imagePreviewUrl: reader.result,
-      });
-    };
+  //   if (file) {
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
-    if (file) {
-      reader.readAsDataURL(file);
+  const onSave = async (data) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("confirmPassword", data.confirmPassword);
+    formData.append("image", data.image[0]);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response.data);
+      setLoading(false);
+      alert(response?.data?.message);
+      reset();
+    } catch (error) {
+      if(error.response){
+        alert(error.response?.data?.message)
+      }
+      setLoading(false);
+     
     }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add form validation and submission logic here
   };
 
   return (
@@ -48,27 +82,35 @@ const RegisterForm = () => {
       <Row>
         <Col>
           <h2 className="text-primary mb-4">Register</h2>
-          <Form onSubmit={handleSubmit}>
-            {formData.imagePreviewUrl && (
+          <Form onSubmit={handleSubmit(onSave)} encType="multipart/form-data">
+            {/* {formData.imagePreviewUrl && (
               <div className="text-center mb-3">
                 <img
                   src={formData.imagePreviewUrl}
                   alt="Profile Preview"
-                  className="img-thumbnail w-50"
+                  className="img-fluid rounded-circle"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                    objectPosition: "top center",
+                  }}
                 />
               </div>
-            )}
+            )} */}
             <Form.Group controlId="formUsername">
-              <Form.Label>Username</Form.Label>
+              <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="Enter your username"
+                name="name"
+                {...register("name")}
+                placeholder="Enter your name"
                 required
                 className="mb-3"
               />
+              {errors.name && (
+                <span className="text-danger">{errors.name.message}</span>
+              )}
             </Form.Group>
 
             <Form.Group controlId="formEmail">
@@ -76,12 +118,14 @@ const RegisterForm = () => {
               <Form.Control
                 type="email"
                 name="email"
-                value={formData.email}
-                onChange={handleChange}
                 placeholder="Enter your email"
                 required
                 className="mb-3"
+                {...register("email")}
               />
+              {errors.email && (
+                <span className="text-danger">{errors.email.message}</span>
+              )}
             </Form.Group>
 
             <Form.Group controlId="formPassword">
@@ -89,12 +133,14 @@ const RegisterForm = () => {
               <Form.Control
                 type="password"
                 name="password"
-                value={formData.password}
-                onChange={handleChange}
                 placeholder="Enter your password"
                 required
                 className="mb-3"
+                {...register("password")}
               />
+              {errors.password && (
+                <span className="text-danger">{errors.password.message}</span>
+              )}
             </Form.Group>
 
             <Form.Group controlId="formConfirmPassword">
@@ -102,34 +148,50 @@ const RegisterForm = () => {
               <Form.Control
                 type="password"
                 name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
                 placeholder="Confirm your password"
                 required
                 className="mb-3"
+                {...register("confirmPassword")}
               />
+              {errors.confirmPassword && (
+                <span className="text-danger">
+                  {errors.confirmPassword.message}
+                </span>
+              )}
             </Form.Group>
 
             <Form.Group controlId="formProfileImage">
               <Form.Label>Profile Image</Form.Label>
               <Form.Control
                 type="file"
-                name="profileImage"
+                name="image"
                 accept="image/*,.dng"
-                onChange={handleImageChange}
                 className="mb-3"
+                {...register("image")}
               />
+              {errors.image && (
+                <span className="text-danger">
+                  {errors.confirmPassword.image}
+                </span>
+              )}
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100">
-              Register
+            <Button variant="primary" type="submit" className="w-100"
+            disabled={loading}
+            >
+              {loading ? "Adding User..." : "Register"}
+             
             </Button>
 
             <p className="mt-3 text-center">
               Already have an account?{" "}
-              <a to="/login" className="text-primary fw-semibold" style={{ cursor: "pointer" }}>
+              <Link
+                to="/"
+                className="text-primary fw-semibold"
+                style={{ cursor: "pointer" }}
+              >
                 Login
-              </a>
+              </Link>
             </p>
           </Form>
         </Col>
