@@ -3,7 +3,7 @@ import "../styles.css";
 
 const AboutContent = () => {
   return (
-    <Container className="about-content p-4 bg-light rounded">
+    <Container className="about-content0">
       <Row>
         <Col>
           <h2 className="text-primary mb-4">Welcome to My To-Do App</h2>

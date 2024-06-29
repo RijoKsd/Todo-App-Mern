@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import ForgotPasswordForm from "./ForgetPasswordForm"; // Import ForgotPasswordForm component
+import ForgotPasswordForm from  "./ForgetPasswordForm" // Import ForgotPasswordForm component
 // import OTPVerification from "./OTPVerification"; // Import OTPVerification component
 
 const LoginPage = () => {
@@ -85,19 +85,28 @@ const LoginPage = () => {
             )}
 
             <div className="mt-3 text-center">
-              {!showForgotPassword ? (
-                <>
-                  <p
-                    className="text-primary"
-                    onClick={handleForgotPassword}
-                    style={{ cursor: "pointer" }}
-                  >
-                    Forgot password?
-                  </p>
-                  <span> | </span>
-                </>
-              ) : null}
-
+                {
+                    !showForgotPassword ? (
+                        <p
+                        className="text-primary"
+                        onClick={handleForgotPassword}
+                        style={{ cursor: "pointer" }}
+                        >
+                        Forgot password?
+                        </p>
+                    ) : (
+                        <p
+                        className="text-primary"
+                        onClick={() => setShowForgotPassword(false)}
+                        style={{ cursor: "pointer" }}
+                        >
+                        Back to login
+                        </p>
+                    )
+                }
+             
+             
+              <span> | </span>
               <p className="text-primary ml-3">Create an account</p>
             </div>
           </div>

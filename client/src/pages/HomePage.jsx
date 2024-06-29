@@ -1,10 +1,10 @@
 import { Container, Row, Col } from "react-bootstrap";
 import AboutContent from "../component/AboutContent";
-import RegisterForm from "../component/RegisterForm";
+import RegisterForm from "../component/Auth/RegisterForm";
 
 const HomePage = () => {
   return (
-    <div className=" ">
+    <div >
       <Container>
         <Row>
           <Col md={6}>

@@ -1,15 +1,15 @@
-import TodoApp from "./TodoApp"
-import LoginPage from "./component/LoginForm"
+import TodoApp from  "./pages/TodoApp"
 
  
+
 const App = () => {
   return (
     <div>
       {/* <TodoApp /> */}
-      <LoginPage />
-    
+      {/* <LoginPage /> */}
+      <TodoApp />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
