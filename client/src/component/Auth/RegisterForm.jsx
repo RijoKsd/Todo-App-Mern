@@ -5,7 +5,8 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { StoreContext } from "../../context/StoreContext";
 
 const userSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -18,6 +19,7 @@ const userSchema = yup.object().shape({
 });
 
 const RegisterForm = () => {
+  const { setToken } = useContext(StoreContext);
   const [loading, setLoading] = useState(false);
   const {
     register,
@@ -64,16 +66,15 @@ const RegisterForm = () => {
           },
         }
       );
-      console.log(response.data);
+      setToken(response.data.token);
       setLoading(false);
       alert(response?.data?.message);
       reset();
     } catch (error) {
-      if(error.response){
-        alert(error.response?.data?.message)
+      if (error.response) {
+        alert(error.response?.data?.message);
       }
       setLoading(false);
-     
     }
   };
 
@@ -176,11 +177,13 @@ const RegisterForm = () => {
               )}
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100"
-            disabled={loading}
+            <Button
+              variant="primary"
+              type="submit"
+              className="w-100"
+              disabled={loading}
             >
-              {loading ? "Adding User..." : "Register"}
-             
+              {loading ? <span>Adding User</span> : <span>Register</span>}
             </Button>
 
             <p className="mt-3 text-center">

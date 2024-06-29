@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import ForgotPasswordForm from "./ForgetPasswordForm";
 import { Link } from "react-router-dom";
@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
+import { StoreContext } from "../../context/StoreContext";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email().required("Email is required"),
@@ -13,6 +14,8 @@ const loginSchema = yup.object().shape({
 });
 
 const LoginPage = () => {
+  const { setToken } = useContext(StoreContext);
+
   const [showForgotPassword, setShowForgotPassword] = useState(false); // State to manage
 
   const [loading, setLoading] = useState(false);
@@ -34,6 +37,7 @@ const LoginPage = () => {
         data
       );
       console.log(response.data);
+      setToken(response.data.token);
       alert(response?.data?.message);
       setLoading(false);
       reset();
@@ -86,7 +90,11 @@ const LoginPage = () => {
                     type="submit"
                     className="w-100 mt-3"
                   >
-                    {loading ? "Checking user..." : "Login"}
+                    {loading ? (
+                      <span>Checking user... </span>
+                    ) : (
+                      <span>Login</span>
+                    )}
                   </Button>
                 </Form>
               </>

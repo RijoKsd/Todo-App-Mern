@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 const TodoForm = () => {
@@ -75,7 +75,7 @@ const TodoForm = () => {
               </Form.Control>
             </Form.Group>
 
-            <Button variant="primary" type="submit" block className="w-100">
+            <Button variant="primary" type="submit"  className="w-100">
               Submit
             </Button>
           </Form>
