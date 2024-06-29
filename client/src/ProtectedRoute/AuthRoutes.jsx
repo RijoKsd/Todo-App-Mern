@@ -3,7 +3,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../context/StoreContext";
 
-const UserRoutes = ({ children }) => {
+const AuthRoutes = ({ children }) => {
   const navigate = useNavigate();
   const { token } = useContext(StoreContext);
 
@@ -23,9 +23,10 @@ const UserRoutes = ({ children }) => {
           }
         );
         const data = response.data;
+        console.log(data, "data from user routes");
 
-        if (data.success === false) {
-          navigate("/", { replace: true });
+        if (data.success === true) {
+          navigate("/todo", { replace: true });
         }
       } catch (error) {
         console.error("Error occurred while checking user:", error);
@@ -38,4 +39,4 @@ const UserRoutes = ({ children }) => {
   return children;
 };
 
-export default UserRoutes;
+export default AuthRoutes;

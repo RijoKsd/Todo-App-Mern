@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import ForgotPasswordForm from "./ForgetPasswordForm";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -15,6 +15,7 @@ const loginSchema = yup.object().shape({
 
 const LoginPage = () => {
   const { setToken } = useContext(StoreContext);
+  const navigate = useNavigate();
 
   const [showForgotPassword, setShowForgotPassword] = useState(false); // State to manage
 
@@ -39,6 +40,7 @@ const LoginPage = () => {
       console.log(response.data);
       setToken(response.data.token);
       alert(response?.data?.message);
+      navigate("/todo", { replace: true}  );
       setLoading(false);
       reset();
     } catch (error) {

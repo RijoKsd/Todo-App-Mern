@@ -1,15 +1,10 @@
-import React, { useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+ import { Container, Row, Col } from "react-bootstrap";
 import TodoForm from "../component/Todo/TodoForm";
 import TodoList from "../component/Todo/TodoList";
 import Header from "../component/Header";
 
 const TodoApp = () => {
-  const [todos, setTodos] = useState([]);
-
-  const addTodo = (todo) => {
-    setTodos([...todos, todo]);
-  };
+  
 
   return (
     <>
@@ -17,10 +12,10 @@ const TodoApp = () => {
       <Container>
         <Row>
           <Col md={6}>
-            <TodoForm addTodo={addTodo} />
+            <TodoForm  />
           </Col>
           <Col md={6}>
-            <TodoList todos={todos} />
+            <TodoList   />
           </Col>
         </Row>
       </Container>

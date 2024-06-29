@@ -1,12 +1,18 @@
 import { Link } from "react-router-dom";
 import "../index.css";
+import { useContext } from "react";
+import { StoreContext } from "../context/StoreContext";
 function Header() {
+
+  const {currentUser} = useContext(StoreContext);
+
+  
   return (
     <div className="bg-body-tertiary p-2">
       <div className="d-flex justify-content-end p-2  ">
-        <div className="todo-header-profile bg-primary">
+        <div className="todo-header-profile">
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREoRGyXmHy_6aIgXYqWHdOT3KjfmnuSyxypw&s"
+            src= {currentUser?.image}
             alt="profile"
           />
 

@@ -1,33 +1,25 @@
-import  { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
+const todoSchema = yup.object().shape({
+  title: yup.string().required("Title is required"),
+  description: yup.string().required("Description is required"),
+  priority: yup.string().required("Priority is required"),
+
+})
+
 const TodoForm = () => {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    priority: "medium",
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission logic here, e.g., send data to backend or store in state
-    console.log(formData);
-    // Reset form fields
-    setFormData({
-      title: "",
-      description: "",
-      priority: "medium",
-    });
-  };
-
+   const [loading, setLoading] = useState(false);
+   const {
+     register,
+     handleSubmit,
+     reset,
+     formState: { errors },
+   } = useForm({
+     resolver: yupResolver(userSchema),
+   });
   return (
     <Container className="form-container p-4 bg-white rounded shadow mb-2 mt-5 ">
       <h2 className="mb-4 text-center">Add New Todo</h2>
@@ -40,10 +32,7 @@ const TodoForm = () => {
                 type="text"
                 name="title"
                 placeholder="Enter todo title"
-                value={formData.title}
-                onChange={handleInputChange}
-                required // Example of adding HTML attributes directly
-                className="mb-3" // Bootstrap class for margin bottom
+                className="mb-3"
               />
             </Form.Group>
 
@@ -54,28 +43,20 @@ const TodoForm = () => {
                 rows={3}
                 name="description"
                 placeholder="Enter todo description"
-                value={formData.description}
-                onChange={handleInputChange}
-                className="mb-3" // Bootstrap class for margin bottom
+                className="mb-3"
               />
             </Form.Group>
 
             <Form.Group controlId="todoPriority">
               <Form.Label>Priority</Form.Label>
-              <Form.Control
-                as="select"
-                name="priority"
-                value={formData.priority}
-                onChange={handleInputChange}
-                className="mb-3" // Bootstrap class for margin bottom
-              >
+              <Form.Control as="select" name="priority" className="mb-3">
                 <option value="high">High</option>
                 <option value="medium">Medium</option>
                 <option value="low">Low</option>
               </Form.Control>
             </Form.Group>
 
-            <Button variant="primary" type="submit"  className="w-100">
+            <Button variant="primary" type="submit" className="w-100">
               Submit
             </Button>
           </Form>

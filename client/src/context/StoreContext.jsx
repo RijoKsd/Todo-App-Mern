@@ -1,42 +1,48 @@
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+ import { createContext, useEffect, useState } from "react";
 
 export const StoreContext = createContext(null);
 
 const StoreProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const [isAuth, setIsAuth] = useState(false);
-    // const verifyAuth = async () => {
-    //      if (!token) {
-    //        setIsAuth(false);
-    //        return;
-    //      }
-    //   try {
-    //     const response = await axios.get(
-    //       "http://localhost:5000/api/auth/check-auth",
-    //       {
-    //         headers: {
-    //           Authorization: `Bearer ${token}`,
-    //         },
-    //       }
-    //     );
-    //     console.log(response.data, "verifyAuth from context");
-    //     setIsAuth(true);
-    //   } catch (error) {
-    //      setIsAuth(false);
-    //   }
-    // };
+   const[currentUser,setCurrentUser] = useState(null);
+  const [todos,setTodos] = useState([]);
+  
   useEffect(() => {
     localStorage.setItem("token", token);
-    // verifyAuth();
   }, [token]);
 
+  const getAllTodos = async ()=>{
+    try {
+      const res = await axios.get("http://localhost:5000/api/todo/list",{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      })
+      setTodos(res.data.todos)
+      setCurrentUser(res.data.user)
+
+
+    }
+    catch(err){
+      console.log(err)
+    
+    }
+  }
+
+  useEffect(()=>{
+    if(token){
+      getAllTodos()
+    }
+  },[token])
   
 
 
   const store = {
     setToken,
     token,
+    todos,
+    currentUser,
   };
 
   return (

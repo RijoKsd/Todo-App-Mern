@@ -10,13 +10,18 @@ import ForgetPasswordForm from "./component/Auth/ForgetPasswordForm";
 import RegisterForm from "./component/Auth/RegisterForm";
 import LoginPage from "./component/Auth/LoginForm";
   import UserRoutes from "./ProtectedRoute/UserRoutes";
+import AuthRoutes from "./ProtectedRoute/AuthRoutes";
 
 const App = () => {
    const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
         <Route path="/" element={<HomePage />}>
-          <Route index element={<LoginPage />} />
+          <Route index element={ 
+            <AuthRoutes>
+              <LoginPage />
+            </AuthRoutes>
+          } />
           <Route path="register" element={<RegisterForm />} />
           <Route path="forgot-password" element={<ForgetPasswordForm />} />
         </Route>

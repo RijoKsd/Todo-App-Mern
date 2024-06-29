@@ -12,6 +12,8 @@
     height: 50px;
     border-radius: 50%;
     transition: all 0.3s ease-in-out;
+    object-fit: cover;
+    object-position: top center;
 }
  
 .todo-header-profile img:is(:hover, :focus) {
@@ -23,7 +25,7 @@
     display: none;
     flex-direction: column;
     position: absolute;
-    top: 48px;
+    top: 42px;
     right: 5px;
      border-radius: 5px;
  }
