@@ -54,37 +54,42 @@ const LoginPage = () => {
       <Row>
         <Col>
           <div>
-            <h2 className="text-center mb-4">Login</h2>
-
             {!showForgotPassword ? (
-              <Form onSubmit={handleSubmit(onSave)}>
-                <Form.Group controlId="formEmail">
-                  <Form.Label>Email address</Form.Label>
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    {...register("email")}
-                    placeholder="Enter your email"
-                  />
-                  <p className="text-danger">{errors.email?.message}</p>
-                </Form.Group>
+              <>
+                <h2 className="text-center mb-4">Login</h2>
 
-                <Form.Group controlId="formPassword">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    name="password"
-                    {...register("password")}
-                    placeholder="Enter your password"
-                  />
-                  <p className="text-danger">{errors.password?.message}</p>
-                </Form.Group>
+                <Form onSubmit={handleSubmit(onSave)}>
+                  <Form.Group controlId="formEmail">
+                    <Form.Label>Email address</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      {...register("email")}
+                      placeholder="Enter your email"
+                    />
+                    <p className="text-danger">{errors.email?.message}</p>
+                  </Form.Group>
 
-                <Button variant="primary" type="submit" className="w-100 mt-3">
-                  {loading ? "Checking user..." : "Login"}
-                 
-                </Button>
-              </Form>
+                  <Form.Group controlId="formPassword">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                      type="password"
+                      name="password"
+                      {...register("password")}
+                      placeholder="Enter your password"
+                    />
+                    <p className="text-danger">{errors.password?.message}</p>
+                  </Form.Group>
+
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="w-100 mt-3"
+                  >
+                    {loading ? "Checking user..." : "Login"}
+                  </Button>
+                </Form>
+              </>
             ) : (
               // Render ForgotPasswordForm component if showForgotPassword is true
               <ForgotPasswordForm />
@@ -93,7 +98,7 @@ const LoginPage = () => {
             <div className="mt-3 text-center">
               {!showForgotPassword ? (
                 <Link
-                  // to="/forgot-password"
+                  to="/forgot-password"
                   className="text-primary"
                   onClick={handleForgotPassword}
                   style={{ cursor: "pointer" }}

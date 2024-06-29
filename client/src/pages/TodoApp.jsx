@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import TodoForm from "../component/Todo/TodoForm";
 import TodoList from "../component/Todo/TodoList";
+import Header from "../component/Header";
 
 const TodoApp = () => {
   const [todos, setTodos] = useState([]);
@@ -11,16 +12,19 @@ const TodoApp = () => {
   };
 
   return (
-    <Container >
-      <Row>
-        <Col md={6}>
-          <TodoForm addTodo={addTodo} />
-        </Col>
-        <Col md={6}>
-          <TodoList todos={todos} />
-        </Col>
-      </Row>
-    </Container>
+    <>
+    <Header />
+      <Container>
+        <Row>
+          <Col md={6}>
+            <TodoForm addTodo={addTodo} />
+          </Col>
+          <Col md={6}>
+            <TodoList todos={todos} />
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 
