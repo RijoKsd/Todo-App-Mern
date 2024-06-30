@@ -8,6 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useContext, useState } from "react";
 import { StoreContext } from "../../context/StoreContext";
+import useAxiosInstances from "../../hooks/useAxiosInstances";
 
 const userSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -20,6 +21,8 @@ const userSchema = yup.object().shape({
 });
 
 const RegisterForm = () => {
+
+  const { unAuthenticatedAxios } = useAxiosInstances();
   const navigate = useNavigate();
   const { setToken } = useContext(StoreContext);
   const [loading, setLoading] = useState(false);
@@ -59,15 +62,20 @@ const RegisterForm = () => {
     formData.append("image", data.image[0]);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      // const response = await axios.post(
+      //   "http://localhost:5000/api/auth/register",
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //   }
+      // );
+      const response = await unAuthenticatedAxios.post("/api/auth/register", formData,{
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       setToken(response.data.token);
       setLoading(false);
        toast.success(response?.data?.message);

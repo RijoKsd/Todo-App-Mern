@@ -7,6 +7,7 @@ import * as yup from "yup";
 import axios from "axios";
 import { StoreContext } from "../../context/StoreContext";
 import { toast } from "react-toastify";
+import useAxiosInstances from  "../../hooks/useAxiosInstances";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email().required("Email is required"),
@@ -14,6 +15,7 @@ const loginSchema = yup.object().shape({
 });
 
 const LoginPage = () => {
+  const {unAuthenticatedAxios} = useAxiosInstances();
   const { setToken } = useContext(StoreContext);
   const navigate = useNavigate();
 
@@ -33,10 +35,11 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        data
-      );
+      // const response = await axios.post(
+      //   "http://localhost:5000/api/auth/login",
+      //   data
+      // );
+      const response = await unAuthenticatedAxios.post("/api/auth/login",data)
       setToken(response.data.token);
       toast.success(response?.data?.message)
       navigate("/todo", { replace: true}  );

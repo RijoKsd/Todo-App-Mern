@@ -10,6 +10,7 @@ import {
 } from "../../hooks/useResetPassword";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import useAxiosInstances from "../../hooks/useAxiosInstances";
 
 const emailSchema = yup.object().shape({
   email: yup.string().email().required("Email is required"),
@@ -30,6 +31,7 @@ const resetPasswordSchema = yup.object().shape({
 });
 
 const ForgotPasswordForm = () => {
+  // const { authenticatedAxios } = useAxiosInstances();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [step, setStep] = useState(1);

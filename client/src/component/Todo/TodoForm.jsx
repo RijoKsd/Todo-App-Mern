@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { StoreContext } from "../../context/StoreContext";
 import { toast } from "react-toastify";
@@ -11,46 +11,97 @@ const todoSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
   description: yup.string().required("Description is required"),
   priority: yup.string().required("Priority is required"),
+});
 
-})
+const TodoForm = ({ setUpdateId, updateId }) => {
+  const [loading, setLoading] = useState(false);
+  const { token, getAllTodos } = useContext(StoreContext);
+  // const [getTodo, setGetTodo] = useState(null);
 
-const TodoForm = () => {
-   const [loading, setLoading] = useState(false);
-   const { token, getAllTodos } = useContext(StoreContext);
-   const {
-     register,
-     handleSubmit,
-     reset,
-     formState: { errors },
-   } = useForm({
-     resolver: yupResolver(todoSchema),
-   });
+  const isEditable = updateId && Boolean(updateId);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(todoSchema),
+  });
 
-   const onSave = async(data)=>{
-    try{
-    setLoading(true)
-        const response = await axios.post("http://localhost:5000/api/todo/add",data,{
-      headers:{
-        Authorization: `Bearer ${token}`
+  const onSave = async (data) => {
+    try {
+      setLoading(true);
+
+      let response;
+      if (isEditable) {
+        response = await axios.put(
+          `http://localhost:5000/api/todo/update/${updateId}`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUpdateId(null);
+      } else {
+        response = await axios.post(
+          "http://localhost:5000/api/todo/add",
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       }
-    });
-     toast.success(response.data.message)
-    getAllTodos();
-    setLoading(false)
-    reset()
-    }catch(err){
-      console.log(err)
-      setLoading(false)
-      toast.error(err.response?.data?.message)
+      toast.success(response.data?.message);
+
+      getAllTodos();
+      setLoading(false);
+
+      reset();
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error(err.response?.data?.message);
     }
- 
+  };
 
+  // get todo by id
+  const getTodoById = async (id) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/todo/get/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // setGetTodo(response.data)
+      let getByIdData = response.data;
+      // use hook setvalue
+      Object.keys(getByIdData).forEach((key) => {
+        setValue(key, getByIdData[key]);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    
-   }
+  useEffect(() => {
+    if (updateId) {
+      getTodoById(updateId);
+    }
+  }, [updateId]);
+
   return (
     <Container className="form-container p-4 bg-white rounded shadow mb-2 mt-5 ">
-      <h2 className="mb-4 text-center">Add New Todo</h2>
+      <h2 className="mb-4 text-center">
+        {isEditable ? "Update New Todo" : "Add New Todo"}
+      </h2>
       <Row>
         <Col>
           <Form onSubmit={handleSubmit(onSave)}>
@@ -108,6 +159,8 @@ const TodoForm = () => {
             >
               {loading ? (
                 <Spinner animation="border" variant="light" />
+              ) : isEditable ? (
+                "Update Todo"
               ) : (
                 "Add Todo"
               )}

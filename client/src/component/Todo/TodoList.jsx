@@ -7,14 +7,13 @@ import axios from "axios";
 import DeleteTodoModal from "../../pages/DeleteModel";
 import { toast } from "react-toastify";
 
-const TodoList = () => {
+const TodoList = ({ updateTodo }) => {
   const { completedTodos, getAllTodos, pendingTodos, token } =
     useContext(StoreContext);
   const [showModal, setShowModal] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState(null);
   const [completedStatus, setCompletedStatus] = useState({});
   const [activeTab, setActiveTab] = useState("pending");
-  
 
   const handleComplete = async (id) => {
     setCompletedStatus((prevState) => ({
@@ -34,6 +33,7 @@ const TodoList = () => {
           },
         }
       );
+      toast.success("Completed task")
       getAllTodos();
     } catch (err) {
       console.log(err);
@@ -43,7 +43,6 @@ const TodoList = () => {
     setSelectedTodo(todo);
     setShowModal(true);
   };
- 
 
   const handleCloseModal = () => {
     setSelectedTodo(null);
@@ -55,6 +54,7 @@ const TodoList = () => {
     handleCloseModal();
   };
 
+  // delete todo
   const deleteTodo = async (id) => {
     try {
       const response = await axios.delete(
@@ -65,12 +65,15 @@ const TodoList = () => {
           },
         }
       );
-       toast.success(response.data.message);
+      toast.success(response.data.message);
       getAllTodos();
     } catch (err) {
-         toast.error(err.response?.data?.message);
+      toast.error(err.response?.data?.message);
     }
   };
+  // update todo
+
+  
 
   return (
     <>
@@ -139,6 +142,7 @@ const TodoList = () => {
                       className="text-success"
                       title="Update todo"
                       role="button"
+                      onClick={() => updateTodo(todo._id)}
                     />
                   </div>
                 </div>
