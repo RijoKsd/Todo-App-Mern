@@ -1,21 +1,19 @@
- import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import TodoForm from "../component/Todo/TodoForm";
 import TodoList from "../component/Todo/TodoList";
 import Header from "../component/Header";
 
 const TodoApp = () => {
-  
-
   return (
     <>
-    <Header />
+      <Header />
       <Container>
-        <Row>
+        <Row className="d-flex flex-column-reverse flex-md-row">
           <Col md={6}>
-            <TodoForm  />
+            <TodoForm />
           </Col>
           <Col md={6}>
-            <TodoList   />
+            <TodoList />
           </Col>
         </Row>
       </Container>

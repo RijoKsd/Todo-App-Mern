@@ -1,5 +1,5 @@
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { useForm } from "react-hook-form";
@@ -19,6 +19,7 @@ const userSchema = yup.object().shape({
 });
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const { setToken } = useContext(StoreContext);
   const [loading, setLoading] = useState(false);
   const {
@@ -69,6 +70,7 @@ const RegisterForm = () => {
       setToken(response.data.token);
       setLoading(false);
       alert(response?.data?.message);
+      navigate("/todo");
       reset();
     } catch (error) {
       if (error.response) {

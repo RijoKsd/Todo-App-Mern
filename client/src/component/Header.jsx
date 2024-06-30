@@ -4,7 +4,11 @@ import { useContext } from "react";
 import { StoreContext } from "../context/StoreContext";
 function Header() {
 
-  const {currentUser} = useContext(StoreContext);
+  const {currentUser,setToken} = useContext(StoreContext);
+  const logoutUser = () => {
+    console.log("logout");
+    setToken(null);
+  };
 
   
   return (
@@ -17,8 +21,8 @@ function Header() {
           />
 
           <div className="todo-header-links  bg-white p-2 rounded  shadow p-3">
-            <Link to="/profile" className="text-dark text-decoration-none">Profile</Link>
-            <Link to={`/`} className="text-dark text-decoration-none">Logout</Link>
+            <Link to="/profile" className="text-dark text-decoration-none mb-1">Profile</Link>
+            <p className="text-dark  m-0" onClick={logoutUser}>Logout</p>
           </div>
         </div>
       </div>

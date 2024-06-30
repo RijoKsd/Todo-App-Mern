@@ -21,8 +21,6 @@ const StoreProvider = ({ children }) => {
       })
       setTodos(res.data.todos)
       setCurrentUser(res.data.user)
-
-
     }
     catch(err){
       console.log(err)
@@ -33,7 +31,7 @@ const StoreProvider = ({ children }) => {
   useEffect(()=>{
     if(token){
       getAllTodos()
-    }
+     }
   },[token])
   
 
@@ -43,6 +41,7 @@ const StoreProvider = ({ children }) => {
     token,
     todos,
     currentUser,
+    getAllTodos,
   };
 
   return (
