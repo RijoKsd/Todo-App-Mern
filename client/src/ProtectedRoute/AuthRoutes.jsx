@@ -9,10 +9,10 @@ const AuthRoutes = ({ children }) => {
 
   useEffect(() => {
     const checkUser = async () => {
-      if (!token || token === "null") {
-        navigate("/", { replace: true });
-        return;
-      }
+      // if (!token || token === "null") {
+      //   // navigate("/", { replace: true });
+      //   return;
+      // }
       try {
         const response = await axios.get(
           "http://localhost:5000/api/auth/check-auth",
@@ -30,6 +30,9 @@ const AuthRoutes = ({ children }) => {
         }
       } catch (error) {
         console.error("Error occurred while checking user:", error);
+        if (window.location.pathname === "/register") {
+          return;
+        }
         navigate("/", { replace: true });
       }
     };

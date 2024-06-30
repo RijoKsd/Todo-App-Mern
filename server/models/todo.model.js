@@ -18,12 +18,16 @@ const todoSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  completedAt: {
+    type: Date,
+  },
+
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-});
+},{timestamps:true});
 
 const Todo = mongoose.model("todo", todoSchema);
 

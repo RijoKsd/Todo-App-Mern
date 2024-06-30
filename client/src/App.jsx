@@ -11,6 +11,7 @@ import RegisterForm from "./component/Auth/RegisterForm";
 import LoginPage from "./component/Auth/LoginForm";
   import UserRoutes from "./ProtectedRoute/UserRoutes";
 import AuthRoutes from "./ProtectedRoute/AuthRoutes";
+import ProfilePage from "./component/ProfilePage";
 
 const App = () => {
    const router = createBrowserRouter(
@@ -22,12 +23,22 @@ const App = () => {
               <LoginPage />
             </AuthRoutes>
           } />
-          <Route path="register" element={<RegisterForm />} />
+          <Route path="register" element={
+            <AuthRoutes>
+              <RegisterForm />
+            </AuthRoutes>
+
+          } />
           <Route path="forgot-password" element={<ForgetPasswordForm />} />
         </Route>
         <Route path="/todo" element = {
           <UserRoutes >
             <TodoApp />
+          </UserRoutes>
+        } />
+        <Route path="/profile" element={
+          <UserRoutes>
+            <ProfilePage />
           </UserRoutes>
         } />
 

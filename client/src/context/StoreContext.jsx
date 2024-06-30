@@ -28,6 +28,9 @@ const StoreProvider = ({ children }) => {
     }
   }
 
+  const completedTodos = todos.filter((todo) => todo.completed);
+  const pendingTodos = todos.filter((todo) => !todo.completed);
+
   useEffect(()=>{
     if(token){
       getAllTodos()
@@ -42,6 +45,8 @@ const StoreProvider = ({ children }) => {
     todos,
     currentUser,
     getAllTodos,
+    completedTodos,
+    pendingTodos,
   };
 
   return (
