@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import ForgotPasswordForm from "./ForgetPasswordForm";
-import { Link, useNavigate } from "react-router-dom";
+import { Container, Row, Col, Form, Button, Spinner } from "react-bootstrap";
+ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
 import { StoreContext } from "../../context/StoreContext";
+import { toast } from "react-toastify";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email().required("Email is required"),
@@ -37,15 +37,14 @@ const LoginPage = () => {
         "http://localhost:5000/api/auth/login",
         data
       );
-      console.log(response.data);
       setToken(response.data.token);
-      alert(response?.data?.message);
+      toast.success(response?.data?.message)
       navigate("/todo", { replace: true}  );
       setLoading(false);
       reset();
     } catch (error) {
       if (error.response) {
-        alert(error.response?.data?.message);
+         toast.error(error.response?.data?.message)
       }
       setLoading(false);
     }
@@ -91,9 +90,10 @@ const LoginPage = () => {
                     variant="primary"
                     type="submit"
                     className="w-100 mt-3"
+                    disabled={loading}
                   >
                     {loading ? (
-                      <span>Checking user... </span>
+                      <Spinner animation="border" variant="light" />
                     ) : (
                       <span>Login</span>
                     )}
@@ -101,8 +101,9 @@ const LoginPage = () => {
                 </Form>
               </>
             ) : (
+              null()
               // Render ForgotPasswordForm component if showForgotPassword is true
-              <ForgotPasswordForm />
+              // <ForgotPasswordForm />
             )}
 
             <div className="mt-3 text-center">

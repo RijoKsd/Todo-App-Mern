@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { StoreContext } from "../../context/StoreContext";
+import { toast } from "react-toastify";
 
 const todoSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -33,12 +34,14 @@ const TodoForm = () => {
         Authorization: `Bearer ${token}`
       }
     });
-    alert(response.data.message)
+     toast.success(response.data.message)
     getAllTodos();
     setLoading(false)
     reset()
     }catch(err){
       console.log(err)
+      setLoading(false)
+      toast.error(err.response?.data?.message)
     }
  
 
@@ -57,7 +60,7 @@ const TodoForm = () => {
                 type="text"
                 name="title"
                 placeholder="Enter todo title"
-                className="mb-3"
+                className="mb-1"
                 {...register("title")}
               />
               {errors.title && (
@@ -65,14 +68,14 @@ const TodoForm = () => {
               )}
             </Form.Group>
 
-            <Form.Group controlId="todoDescription">
+            <Form.Group controlId="todoDescription" className="mt-2">
               <Form.Label>Todo Description</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
                 name="description"
                 placeholder="Enter todo description"
-                className="mb-3"
+                className="mb-1"
                 {...register("description")}
               />
               {errors.description && (
@@ -82,7 +85,7 @@ const TodoForm = () => {
               )}
             </Form.Group>
 
-            <Form.Group controlId="todoPriority">
+            <Form.Group controlId="todoPriority" className="mt-2">
               <Form.Label>Priority</Form.Label>
               <Form.Control
                 as="select"
@@ -97,9 +100,17 @@ const TodoForm = () => {
               </Form.Control>
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100" disabled={loading}>
-              {loading ? "Adding..." : "Add Todo"}
-            
+            <Button
+              variant="primary"
+              type="submit"
+              className="w-100"
+              disabled={loading}
+            >
+              {loading ? (
+                <Spinner animation="border" variant="light" />
+              ) : (
+                "Add Todo"
+              )}
             </Button>
           </Form>
         </Col>

@@ -1,6 +1,7 @@
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+  import {  toast } from "react-toastify";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -69,12 +70,12 @@ const RegisterForm = () => {
       );
       setToken(response.data.token);
       setLoading(false);
-      alert(response?.data?.message);
+       toast.success(response?.data?.message);
       navigate("/todo");
       reset();
     } catch (error) {
       if (error.response) {
-        alert(error.response?.data?.message);
+         toast.error(error.response?.data?.message);
       }
       setLoading(false);
     }
@@ -185,7 +186,11 @@ const RegisterForm = () => {
               className="w-100"
               disabled={loading}
             >
-              {loading ? <span>Adding User</span> : <span>Register</span>}
+              {loading ? (
+                <Spinner animation="border" variant="light" />
+              ) : (
+                <span>Register</span>
+              )}
             </Button>
 
             <p className="mt-3 text-center">

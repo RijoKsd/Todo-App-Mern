@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -8,7 +8,8 @@ import {
   checkResetOtp,
   resetPassword,
 } from "../../hooks/useResetPassword";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const emailSchema = yup.object().shape({
   email: yup.string().email().required("Email is required"),
@@ -53,11 +54,12 @@ const ForgotPasswordForm = () => {
       if (response.success) {
         setEmail(email);
         setLoading(false);
-        alert(response.message);
+         toast.success(response.message);
+
         setStep(2);
       } else {
         setLoading(false);
-        alert(response.message);
+         toast.error(response.message);
       }
     } catch (err) {
       setLoading(false);
@@ -76,10 +78,10 @@ const ForgotPasswordForm = () => {
         setLoading(false);
         setStep(3);
 
-        alert(response.message);
+         toast.success(response.message);
       } else {
         setLoading(false);
-        alert(response.message);
+         toast.error(response.message);
       }
     } catch (err) {
       setLoading(false);
@@ -97,12 +99,13 @@ const ForgotPasswordForm = () => {
       const response = await resetPassword(datas);
       if (response.success) {
         setLoading(false);
-        alert(response.message);
+         toast.success(response.message);
         navigate("/");
       }
     } catch (err) {
       setLoading(false);
       console.log(err);
+      toast.error("Something went wrong");
     }
   };
 
@@ -118,15 +121,40 @@ const ForgotPasswordForm = () => {
             <Form.Control
               type="email"
               placeholder="Enter your email"
+              autoFocus
               {...register("email")}
             />
             {errors.email && (
               <p className="text-danger">{errors.email.message}</p>
             )}
           </Form.Group>
-          <Button variant="primary" type="submit" className="w-100 mt-3">
-            {loading ? "Sending Otp..." : "Send OTP"}
+          <Button
+            variant="primary"
+            type="submit"
+            className="w-100 mt-3"
+            disabled={loading}
+          >
+            {loading ? (
+              <Spinner animation="border" variant="light" />
+            ) : (
+              "Send OTP"
+            )}
           </Button>
+
+          <div className="mt-3 text-center">
+            <Link
+              className="text-primary"
+              onClick={() => navigate("/")}
+              style={{ cursor: "pointer" }}
+            >
+              Back to login
+            </Link>
+
+            <span> | </span>
+            <Link to="/register" className="text-primary ml-3">
+              Create an account
+            </Link>
+          </div>
         </Form>
       )}
 
@@ -140,15 +168,35 @@ const ForgotPasswordForm = () => {
             <Form.Control
               type="text"
               name="otp"
+              autoFocus
               placeholder="Enter OTP"
-              pattern="[0-9]{6}"
               {...register("otp")}
             />
             {errors.otp && <p className="text-danger">{errors.otp.message}</p>}
           </Form.Group>
-          <Button variant="primary" type="submit" className="w-100 mt-3">
-            {loading ? "Verifying OTP..." : "Verify OTP"}
+          <Button variant="primary" type="submit" className="w-100 mt-3"
+            disabled={loading}
+          >
+            {loading ? (
+              <Spinner animation="border" variant="light" />
+            ) : (
+              "Verify OTP"
+            )}
           </Button>
+          <div className="mt-3 text-center">
+            <Link
+              className="text-primary"
+              onClick={() => navigate("/")}
+              style={{ cursor: "pointer" }}
+            >
+              Back to login
+            </Link>
+
+            <span> | </span>
+            <Link to="/register" className="text-primary ml-3">
+              Create an account
+            </Link>
+          </div>
         </Form>
       )}
 
@@ -162,6 +210,7 @@ const ForgotPasswordForm = () => {
             <Form.Control
               type="password"
               name="password"
+              autoFocus
               placeholder="Enter new password"
               className="mb-3"
               {...register("password")}
@@ -183,8 +232,17 @@ const ForgotPasswordForm = () => {
               <p className="text-danger">{errors.confirmPassword.message}</p>
             )}
           </Form.Group>
-          <Button variant="primary" type="submit" className="w-100 mt-3">
-            Set New Password
+          <Button variant="primary" type="submit" className="w-100 mt-3"
+            disabled={loading}
+          >
+            {
+              loading ? (
+                <Spinner animation="border" variant="light" />
+              ) : (
+                "Reset Password"
+              )
+            }
+            
           </Button>
         </Form>
       )}

@@ -5,16 +5,16 @@ import { FaTrashAlt } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
 import axios from "axios";
 import DeleteTodoModal from "../../pages/DeleteModel";
+import { toast } from "react-toastify";
 
 const TodoList = () => {
   const { completedTodos, getAllTodos, pendingTodos, token } =
     useContext(StoreContext);
   const [showModal, setShowModal] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState(null);
-
   const [completedStatus, setCompletedStatus] = useState({});
-
   const [activeTab, setActiveTab] = useState("pending");
+  
 
   const handleComplete = async (id) => {
     setCompletedStatus((prevState) => ({
@@ -65,10 +65,10 @@ const TodoList = () => {
           },
         }
       );
-      console.log(response.data);
+       toast.success(response.data.message);
       getAllTodos();
     } catch (err) {
-      console.log(err);
+         toast.error(err.response?.data?.message);
     }
   };
 
