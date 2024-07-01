@@ -2,10 +2,12 @@ import axios from "axios";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../context/StoreContext";
+import useAxiosInstances from "../hooks/useAxiosInstances";
 
 const UserRoutes = ({ children }) => {
   const navigate = useNavigate();
   const { token } = useContext(StoreContext);
+  const {authenticatedAxios} = useAxiosInstances();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -14,14 +16,15 @@ const UserRoutes = ({ children }) => {
         return;
       }
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/auth/check-auth",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        // const response = await axios.get(
+        //   "https://todo-app-mern-production-f614.up.railway.app/api/auth/check-auth",
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${token}`,
+        //     },
+        //   }
+        // );
+        const response = await authenticatedAxios.get("/api/auth/check-auth")
         const data = response.data;
 
         if (data.success === false) {

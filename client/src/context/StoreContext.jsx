@@ -14,11 +14,14 @@ const StoreProvider = ({ children }) => {
 
   const getAllTodos = async ()=>{
     try {
-      const res = await axios.get("http://localhost:5000/api/todo/list",{
-        headers:{
-          Authorization: `Bearer ${token}`
+      const res = await axios.get(
+        "https://todo-app-mern-production-f614.up.railway.app/api/todo/list",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      })
+      );
       setTodos(res.data.todos)
       setCurrentUser(res.data.user)
     }
