@@ -7,7 +7,7 @@ const useAxiosInstances = () => {
 
   const authenticatedAxios = useMemo(() => {
     return axios.create({
-      baseURL: "http://localhost:5000",
+      baseURL: "https://todo-app-mern-production-f614.up.railway.app/",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -16,17 +16,15 @@ const useAxiosInstances = () => {
 
   const unAuthenticatedAxios = useMemo(() => {
     return axios.create({
-      baseURL: "http://localhost:5000",
+      baseURL: "https://todo-app-mern-production-f614.up.railway.app/",
     });
   }, []);
 
-  const baseURL = "http://localhost:5000";
-
+ 
   return {
     authenticatedAxios,
     unAuthenticatedAxios,
-    baseURL
-  };
+   };
 };
 
 export default useAxiosInstances;
