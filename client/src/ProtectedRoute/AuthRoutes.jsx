@@ -23,13 +23,11 @@ const AuthRoutes = ({ children }) => {
           }
         );
         const data = response.data;
-        console.log(data, "data from user routes");
-
+ 
         if (data.success === true) {
           navigate("/todo", { replace: true });
         }
       } catch (error) {
-        console.error("Error occurred while checking user:", error);
         if (window.location.pathname === "/register") {
           return;
         }

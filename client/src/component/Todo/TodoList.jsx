@@ -3,12 +3,14 @@ import { ListGroup, Button, Form, Badge } from "react-bootstrap";
 import { StoreContext } from "../../context/StoreContext";
 import { FaTrashAlt } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
-import axios from "axios";
 import DeleteTodoModal from "../../pages/DeleteModel";
 import { toast } from "react-toastify";
+import useAxiosInstances from "../../hooks/useAxiosInstances";
 
 const TodoList = ({ updateTodo }) => {
-  const { completedTodos, getAllTodos, pendingTodos, token } =
+  const { authenticatedAxios } = useAxiosInstances();
+
+  const { completedTodos, getAllTodos, pendingTodos } =
     useContext(StoreContext);
   const [showModal, setShowModal] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState(null);
@@ -22,18 +24,10 @@ const TodoList = ({ updateTodo }) => {
     }));
 
     try {
-      await axios.put(
-        `http://localhost:5000/api/todo/update/${id}`,
-        {
-          completed: true,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      toast.success("Completed task")
+      await authenticatedAxios.put(`/api/todo/update/${id}`, {
+        completed: true,
+      });
+      toast.success("Completed task");
       getAllTodos();
     } catch (err) {
       console.log(err);
@@ -57,14 +51,7 @@ const TodoList = ({ updateTodo }) => {
   // delete todo
   const deleteTodo = async (id) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:5000/api/todo/delete/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await authenticatedAxios.delete(`/api/todo/delete/${id}`);
       toast.success(response.data.message);
       getAllTodos();
     } catch (err) {
@@ -72,8 +59,6 @@ const TodoList = ({ updateTodo }) => {
     }
   };
   // update todo
-
-  
 
   return (
     <>

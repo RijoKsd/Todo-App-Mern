@@ -28,7 +28,6 @@ const UserRoutes = ({ children }) => {
           navigate("/", { replace: true });
         }
       } catch (error) {
-        console.error("Error occurred while checking user:", error);
         navigate("/", { replace: true });
       }
     };

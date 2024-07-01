@@ -14,7 +14,7 @@ import AuthRoutes from "./ProtectedRoute/AuthRoutes";
 import ProfilePage from "./component/ProfilePage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import EditProfile from "./component/EditProfile";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -57,15 +57,7 @@ const App = () => {
             </UserRoutes>
           }
         />
-
-        <Route
-          path="/update"
-          element={
-            <UserRoutes>
-              <EditProfile />
-            </UserRoutes>
-          }
-        />
+        <Route path = "*" element={<NotFoundPage />}/>
       </Route>
     )
   );

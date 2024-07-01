@@ -7,6 +7,7 @@ import { HiHome } from "react-icons/hi2";
 function Header() {
   const {currentUser,setToken} = useContext(StoreContext);
   const navigate = useNavigate();
+
   const logoutUser = () => {
     console.log("logout");
     setToken(null);
@@ -16,7 +17,7 @@ function Header() {
   
   return (
     <div className="bg-body-tertiary p-2">
-      <div className="d-flex justify-content-end p-2 align-items-center  ">
+      <div className="d-flex justify-content-end p-2 align-items-center">
         <div className=" mx-5">
           <Link to="/todo">
             <HiHome size={30} className=" text-dark" />

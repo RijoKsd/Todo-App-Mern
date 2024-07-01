@@ -1,7 +1,6 @@
 import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-  import {  toast } from "react-toastify";
+   import {  toast } from "react-toastify";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -62,15 +61,6 @@ const RegisterForm = () => {
     formData.append("image", data.image[0]);
 
     try {
-      // const response = await axios.post(
-      //   "http://localhost:5000/api/auth/register",
-      //   formData,
-      //   {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //   }
-      // );
       const response = await unAuthenticatedAxios.post("/api/auth/register", formData,{
         headers: {
           "Content-Type": "multipart/form-data",

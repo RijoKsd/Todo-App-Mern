@@ -1,5 +1,5 @@
 import axios from "axios";
- import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const StoreContext = createContext(null);
 
@@ -23,7 +23,7 @@ const StoreProvider = ({ children }) => {
       setCurrentUser(res.data.user)
     }
     catch(err){
-      console.log(err)
+      // console.error(err)
     
     }
   }

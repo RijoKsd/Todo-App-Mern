@@ -11,7 +11,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAxiosInstances from "../../hooks/useAxiosInstances";
-
+ 
 const emailSchema = yup.object().shape({
   email: yup.string().email().required("Email is required"),
 });
@@ -31,8 +31,8 @@ const resetPasswordSchema = yup.object().shape({
 });
 
 const ForgotPasswordForm = () => {
-  // const { authenticatedAxios } = useAxiosInstances();
-  const navigate = useNavigate();
+  const {unAuthenticatedAxios} = useAxiosInstances();
+   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [step, setStep] = useState(1);
 
@@ -50,14 +50,13 @@ const ForgotPasswordForm = () => {
   const onSave = async (data) => {
     setLoading(true);
     const { email } = data;
-
     try {
-      const response = await checkResetEmail(email);
+      const response = await checkResetEmail(email, unAuthenticatedAxios);
+
       if (response.success) {
         setEmail(email);
         setLoading(false);
          toast.success(response.message);
-
         setStep(2);
       } else {
         setLoading(false);
@@ -75,7 +74,7 @@ const ForgotPasswordForm = () => {
     // Call API to verify OTP
     const { otp } = data;
     try {
-      const response = await checkResetOtp(email, otp);
+      const response = await checkResetOtp(email, otp, unAuthenticatedAxios);
       if (response.success) {
         setLoading(false);
         setStep(3);
@@ -98,7 +97,7 @@ const ForgotPasswordForm = () => {
     const datas = { email, ...data };
 
     try {
-      const response = await resetPassword(datas);
+      const response = await resetPassword(datas, unAuthenticatedAxios);
       if (response.success) {
         setLoading(false);
          toast.success(response.message);

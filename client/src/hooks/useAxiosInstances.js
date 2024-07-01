@@ -20,9 +20,12 @@ const useAxiosInstances = () => {
     });
   }, []);
 
+  const baseURL = "http://localhost:5000";
+
   return {
     authenticatedAxios,
     unAuthenticatedAxios,
+    baseURL
   };
 };
 

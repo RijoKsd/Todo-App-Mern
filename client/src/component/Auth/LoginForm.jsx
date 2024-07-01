@@ -1,13 +1,12 @@
 import { useContext, useState } from "react";
 import { Container, Row, Col, Form, Button, Spinner } from "react-bootstrap";
- import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import axios from "axios";
 import { StoreContext } from "../../context/StoreContext";
 import { toast } from "react-toastify";
-import useAxiosInstances from  "../../hooks/useAxiosInstances";
+import useAxiosInstances from "../../hooks/useAxiosInstances";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email().required("Email is required"),
@@ -15,7 +14,7 @@ const loginSchema = yup.object().shape({
 });
 
 const LoginPage = () => {
-  const {unAuthenticatedAxios} = useAxiosInstances();
+  const { unAuthenticatedAxios } = useAxiosInstances();
   const { setToken } = useContext(StoreContext);
   const navigate = useNavigate();
 
@@ -35,19 +34,15 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      // const response = await axios.post(
-      //   "http://localhost:5000/api/auth/login",
-      //   data
-      // );
-      const response = await unAuthenticatedAxios.post("/api/auth/login",data)
+      const response = await unAuthenticatedAxios.post("/api/auth/login", data);
       setToken(response.data.token);
-      toast.success(response?.data?.message)
-      navigate("/todo", { replace: true}  );
+      toast.success(response?.data?.message);
+      navigate("/todo", { replace: true });
       setLoading(false);
       reset();
     } catch (error) {
       if (error.response) {
-         toast.error(error.response?.data?.message)
+        toast.error(error.response?.data?.message);
       }
       setLoading(false);
     }

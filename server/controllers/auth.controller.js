@@ -191,12 +191,19 @@ const updateUser = async (req, res) => {
    const userId = req?.user?.id;
   const image = req.file ? req.file.path : null;
   const { name } = req.body;
+  //  if(!image && !name){
+  //   return res.status(400).json({success:false, message:"Profile not updated"})
+  // }
 
   try {
     const user = await userModel.findById(userId);
     const currentProfileImage = user.image;
     const updateFields = {};
-    if (name) updateFields.name = name;
+    if (name){
+      updateFields.name = name;
+    }else{
+      return res.status(400).json({success:false, message:"Name is required"} )
+    }
 
     if (image) {
       const publicId = currentProfileImage

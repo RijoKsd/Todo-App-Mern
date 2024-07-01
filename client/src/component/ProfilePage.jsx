@@ -1,18 +1,27 @@
 import { useContext, useState, useRef } from "react";
-import { Container, Row, Col, Card, Button, Form, Spinner } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Spinner,
+} from "react-bootstrap";
 import Header from "./Header";
 import { StoreContext } from "../context/StoreContext";
-import axios from "axios";
+import { toast } from "react-toastify";
+import useAxiosInstances from "../hooks/useAxiosInstances";
 
 const ViewProfile = () => {
-  const { currentUser, token, getAllTodos } = useContext(StoreContext);
+  const { authenticatedAxios } = useAxiosInstances();
+  const { currentUser,  getAllTodos } = useContext(StoreContext);
   const [isEdit, setIsEdit] = useState(false);
   const [name, setName] = useState(currentUser?.name || "");
   const [image, setImage] = useState(currentUser?.image || "");
-  const [imageFile,setImageFile] = useState(null)
+  const [imageFile, setImageFile] = useState(null);
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  
 
   const onEditClick = () => {
     setIsEdit(!isEdit);
@@ -24,7 +33,7 @@ const ViewProfile = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-   setImageFile(file)
+    setImageFile(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -34,36 +43,35 @@ const ViewProfile = () => {
     }
   };
 
- 
-
-  const handleSave =async () => {
+  const handleSave = async () => {
     setLoading(true);
     const formData = new FormData();
-    formData.append("name",name);
-    if(imageFile){
+    formData.append("name", name);
+    if (imageFile) {
       formData.append("image", imageFile);
     }
-    try{
-      const response = await axios.put(
-        `http://localhost:5000/api/auth/update`,
+    try {
+ 
+      const response = await authenticatedAxios.put(
+        `/api/auth/update`,
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
-      if(response.data?.success){
+      if (response.data?.success) {
+        toast.success(response.data.message);
         getAllTodos();
-        setIsEdit(false)
+        setIsEdit(false);
         setLoading(false);
       }
-    }catch(err){
-      console.log(err.message)
-      setLoading(false)
+    } catch (err) {
+      toast.error(err.response.data.message);
+      console.log(err.message);
+      setLoading(false);
     }
-      
   };
 
   return (
@@ -138,12 +146,14 @@ const ViewProfile = () => {
                   {isEdit ? (
                     <Button
                       onClick={() => handleSave()}
-                      className="btn btn-success w-50"
+                      className="btn btn-primary w-50"
                       disabled={loading}
                     >
-                      {
-                        loading ?  <Spinner animation="border" variant="light" /> : "Save"
-                      }
+                      {loading ? (
+                        <Spinner animation="border" variant="light" />
+                      ) : (
+                        "Save"
+                      )}
                     </Button>
                   ) : (
                     <Button

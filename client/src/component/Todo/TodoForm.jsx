@@ -3,9 +3,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { StoreContext } from "../../context/StoreContext";
 import { toast } from "react-toastify";
+import useAxiosInstances from "../../hooks/useAxiosInstances.js"
 
 const todoSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -14,9 +14,10 @@ const todoSchema = yup.object().shape({
 });
 
 const TodoForm = ({ setUpdateId, updateId }) => {
+
+  const { authenticatedAxios } = useAxiosInstances();
   const [loading, setLoading] = useState(false);
-  const { token, getAllTodos } = useContext(StoreContext);
-  // const [getTodo, setGetTodo] = useState(null);
+  const { getAllTodos } = useContext(StoreContext);
 
   const isEditable = updateId && Boolean(updateId);
   const {
@@ -35,26 +36,10 @@ const TodoForm = ({ setUpdateId, updateId }) => {
 
       let response;
       if (isEditable) {
-        response = await axios.put(
-          `http://localhost:5000/api/todo/update/${updateId}`,
-          data,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        response = await authenticatedAxios.put(`/api/todo/update/${updateId}`, data)
         setUpdateId(null);
       } else {
-        response = await axios.post(
-          "http://localhost:5000/api/todo/add",
-          data,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        response = await authenticatedAxios.post("/api/todo/add", data)
       }
       toast.success(response.data?.message);
 
@@ -72,15 +57,7 @@ const TodoForm = ({ setUpdateId, updateId }) => {
   // get todo by id
   const getTodoById = async (id) => {
     try {
-      const response = await axios.get(
-        `http://localhost:5000/api/todo/get/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      // setGetTodo(response.data)
+      const response = await authenticatedAxios.get(`/api/todo/get/${id}`);
       let getByIdData = response.data;
       // use hook setvalue
       Object.keys(getByIdData).forEach((key) => {
