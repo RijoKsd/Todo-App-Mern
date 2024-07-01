@@ -9,8 +9,7 @@ function Header() {
   const navigate = useNavigate();
 
   const logoutUser = () => {
-    console.log("logout");
-    setToken(null);
+     setToken(null);
     navigate("/", { replace: true })
   };
 
