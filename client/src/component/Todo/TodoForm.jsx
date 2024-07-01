@@ -41,7 +41,6 @@ const TodoForm = ({ setUpdateId, updateId }) => {
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data"
             },
           }
         );
