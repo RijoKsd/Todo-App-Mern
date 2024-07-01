@@ -1,0 +1,40 @@
+
+
+.todo-header-profile {
+    position: relative;
+    width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+
+}
+.todo-header-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+    object-fit: cover;
+    object-position: top center;
+}
+ 
+.todo-header-profile img:is(:hover, :focus) {
+    border-radius: 50%;
+     box-shadow: 0px 0px 0px 3px rgb(255, 255, 255),
+        0px 0px 10px 5px #5f95e7;
+ }
+.todo-header-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 40px;
+    right: 5px;
+     border-radius: 5px;
+     z-index: 9;
+ }
+
+.todo-header-profile:hover .todo-header-links {
+    display: flex;
+}
+.todo-header-links a:hover{
+    color:#5f95e7 !important;
+      
+}
