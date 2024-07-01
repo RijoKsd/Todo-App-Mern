@@ -14,9 +14,9 @@ import AuthRoutes from "./ProtectedRoute/AuthRoutes";
 import ProfilePage from "./component/ProfilePage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EditProfile from "./component/EditProfile";
 
 const App = () => {
-  
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
@@ -39,6 +39,8 @@ const App = () => {
           />
           <Route path="forgot-password" element={<ForgetPasswordForm />} />
         </Route>
+
+        {/* todo route */}
         <Route
           path="/todo"
           element={
@@ -52,6 +54,15 @@ const App = () => {
           element={
             <UserRoutes>
               <ProfilePage />
+            </UserRoutes>
+          }
+        />
+
+        <Route
+          path="/update"
+          element={
+            <UserRoutes>
+              <EditProfile />
             </UserRoutes>
           }
         />

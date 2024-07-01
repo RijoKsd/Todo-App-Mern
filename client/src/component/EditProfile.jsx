@@ -1,39 +1,11 @@
-import React, { useState } from "react";
+ import { useContext } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import { StoreContext } from "../context/StoreContext";
 
-const EditProfile = ({ user, onSaveClick }) => {
-  const [userInfo, setUserInfo] = useState({
-    image: user.image,
-    name: user.name,
-    email: user.email,
-  });
+const EditProfile = ( ) => {
+    const { currentUser } = useContext(StoreContext);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserInfo({
-      ...userInfo,
-      [name]: value,
-    });
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setUserInfo({
-          ...userInfo,
-          image: e.target.result,
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSaveClick(userInfo);
-  };
+ 
 
   return (
     <Container className="vh-100 d-flex justify-content-center align-items-center">
@@ -42,11 +14,11 @@ const EditProfile = ({ user, onSaveClick }) => {
           <Card className="shadow">
             <Card.Body>
               <Card.Title className="text-center mb-4">Edit Profile</Card.Title>
-              <Form onSubmit={handleSubmit}>
+              <Form>
                 <div className="text-center mb-4">
                   <Card.Img
                     variant="top"
-                    src={userInfo.image}
+                    src={currentUser?.image}
                     className="p-3 rounded-circle mx-auto d-block"
                     style={{
                       width: "150px",
@@ -55,12 +27,11 @@ const EditProfile = ({ user, onSaveClick }) => {
                     }}
                   />
                   <Form.Group>
-                    <Form.File
-                      id="formImage"
-                      label="Choose new image"
-                      custom
-                      onChange={handleImageChange}
-                      accept="image/*"
+                    <Form.Control
+                      type="file"
+                      name="image"
+                      accept="image/*,.dng"
+                      className="mb-3"
                     />
                   </Form.Group>
                 </div>
@@ -69,9 +40,8 @@ const EditProfile = ({ user, onSaveClick }) => {
                   <Form.Control
                     type="text"
                     name="name"
-                    value={userInfo.name}
-                    onChange={handleChange}
                     placeholder="Enter your name"
+                     
                     required
                   />
                 </Form.Group>
@@ -80,9 +50,8 @@ const EditProfile = ({ user, onSaveClick }) => {
                   <Form.Control
                     type="email"
                     name="email"
-                    value={userInfo.email}
-                    onChange={handleChange}
                     placeholder="Enter your email"
+                     
                     readOnly
                   />
                 </Form.Group>

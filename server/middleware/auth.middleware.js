@@ -1,8 +1,10 @@
 const jwt = require('jsonwebtoken');
 
 const verifyToken = async (req,res, next)=>{
+    
     try{
         const header = req.header('Authorization');
+         
         if(!header){
             return res.status(401).json({message:" Invalid authorization"}) 
         }

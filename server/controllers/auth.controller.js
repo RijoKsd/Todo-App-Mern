@@ -98,72 +98,136 @@ const verifyEmail = async (req, res) => {
     }
     await sendEmail(email, otp);
 
-    return res.status(200).json({ message: "OTP sent to email", email,success:true });
+    return res
+      .status(200)
+      .json({ message: "OTP sent to email", email, success: true });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Server Error", success:false });
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
 
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
   if (!email || !otp) {
-    return res.status(400).json({ message: "All fields are required", success:false });
+    return res
+      .status(400)
+      .json({ message: "All fields are required", success: false });
   }
   try {
     const existingOtp = await otpModel.findOne({ email });
     if (!existingOtp) {
-      return res.status(400).json({ message: "OTP does not exist for email", success:false });
+      return res
+        .status(400)
+        .json({ message: "OTP does not exist for email", success: false });
     }
     if (existingOtp.otp !== otp) {
-      return res.status(400).json({ message: "Invalid OTP", success:false });
+      return res.status(400).json({ message: "Invalid OTP", success: false });
     }
 
     // delete otp
     await otpModel.findOneAndDelete({ email });
-    return res.status(200).json({ message: "OTP verified successfully", success:true });
+    return res
+      .status(200)
+      .json({ message: "OTP verified successfully", success: true });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Server Error", success:false });
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
 const resetPassword = async (req, res) => {
-    const { email, password,  confirmPassword} = req.body;
-    if (!email || !password || !confirmPassword) {
-      return res.status(400).json({ message: "All fields are required", success:false });
+  const { email, password, confirmPassword } = req.body;
+  if (!email || !password || !confirmPassword) {
+    return res
+      .status(400)
+      .json({ message: "All fields are required", success: false });
+  }
+  try {
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "User does not exist", success: false });
     }
-    try{
-        const user = await userModel.findOne ({ email });
-        if (!user){
-            return res.status(400).json({ message: "User does not exist", success:false });
-        }
-        if(password.length < 6){
-            return res.status(400).json({ message: "Password must be atleast 6 characters", success:false });
-        }
-        if (password !== confirmPassword){
-            return res.status(400).json({ message: "Password do not match", success:false });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await  user.updateOne({ password: hashedPassword });
-        return res.status(200).json({ message: "Password reset successfully", success:true });
-    }catch(err){
-        console.error(err);
-        return res.status(500).json({ message: "Server Error", success:false });
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be atleast 6 characters",
+        success: false,
+      });
     }
+    if (password !== confirmPassword) {
+      return res
+        .status(400)
+        .json({ message: "Password do not match", success: false });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await user.updateOne({ password: hashedPassword });
+    return res
+      .status(200)
+      .json({ message: "Password reset successfully", success: true });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server Error", success: false });
+  }
 };
 
-const checkAuth = async(req,res)=>{
+const checkAuth = async (req, res) => {
   const userId = req.user.id;
-  try{
+  try {
     const user = await userModel.findById(userId).select("-password");
-    if(!user){
-      return res.status(400).json({message: "Authentication failed", success:false});
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Authentication failed", success: false });
     }
-    return res.status(200).json({user, success:true});
-  }catch(err){
+    return res.status(200).json({ user, success: true });
+  } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Server Error", success:false });
+    return res.status(500).json({ message: "Server Error", success: false });
   }
-}
+};
 
-module.exports = { register, login, verifyEmail, resetPassword, verifyOtp,checkAuth };
+const updateUser = async (req, res) => {
+   const userId = req?.user?.id;
+  const image = req.file ? req.file.path : null;
+  const { name } = req.body;
+
+  try {
+    const user = await userModel.findById(userId);
+    const currentProfileImage = user.image;
+    const updateFields = {};
+    if (name) updateFields.name = name;
+
+    if (image) {
+      const publicId = currentProfileImage
+        .split("/")
+        .splice(-2)
+        .join("/")
+        .split(".")[0];
+      await cloudinary.uploader.destroy(publicId);
+
+      const imageResult = await cloudinary.uploader.upload(image, {
+        folder: "TodoApp",
+        tags: "todo-user",
+      });
+
+      updateFields.image = imageResult.secure_url;
+    }
+    await user.updateOne({ $set: updateFields });
+    return res
+      .status(200)
+      .json({ message: "Profile updated successfully", success: true });
+  } catch (err) {
+    return res.status(500).json({ message: "Server Error", success: false });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  verifyEmail,
+  resetPassword,
+  verifyOtp,
+  checkAuth,
+  updateUser,
+};
