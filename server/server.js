@@ -15,6 +15,10 @@ app.use(cors());
 app.use("/api/auth", authRouter);
 app.use("/api/todo", todoRouter);
 
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
 const startServer = async () => {
   try {
     await connectDB();
