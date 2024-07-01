@@ -7,7 +7,8 @@ const useAxiosInstances = () => {
 
   const authenticatedAxios = useMemo(() => {
     return axios.create({
-      baseURL: "https://todo-app-mern-production-f614.up.railway.app",
+      baseURL:
+        "https://vercel.com/rijoksds-projects/todo-app-mern-be/EJxzeXkP3HXM6YWB76GdS9pRREmc",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -16,17 +17,16 @@ const useAxiosInstances = () => {
 
   const unAuthenticatedAxios = useMemo(() => {
     return axios.create({
-      baseURL: "https://todo-app-mern-production-f614.up.railway.app",
+      baseURL:
+        "https://vercel.com/rijoksds-projects/todo-app-mern-be/EJxzeXkP3HXM6YWB76GdS9pRREmc",
     });
   }, []);
 
-  const baseURL = "https://todo-app-mern-production-f614.up.railway.app";
-
+ 
   return {
     authenticatedAxios,
     unAuthenticatedAxios,
-    baseURL
-  };
+   };
 };
 
 export default useAxiosInstances;
