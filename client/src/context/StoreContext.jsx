@@ -15,7 +15,7 @@ const StoreProvider = ({ children }) => {
   const getAllTodos = async ()=>{
     try {
       const res = await axios.get(
-        "https://vercel.com/rijoksds-projects/todo-app-mern-be/EJxzeXkP3HXM6YWB76GdS9pRREmc/api/todo/list",
+        "https://todo-app-mern-be-git-main-rijoksds-projects.vercel.app/api/todo/list",
         {
           headers: {
             Authorization: `Bearer ${token}`,

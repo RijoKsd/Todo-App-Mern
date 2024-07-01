@@ -8,7 +8,7 @@ const useAxiosInstances = () => {
   const authenticatedAxios = useMemo(() => {
     return axios.create({
       baseURL:
-        "https://vercel.com/rijoksds-projects/todo-app-mern-be/EJxzeXkP3HXM6YWB76GdS9pRREmc",
+        "https://todo-app-mern-be-git-main-rijoksds-projects.vercel.app",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -18,7 +18,7 @@ const useAxiosInstances = () => {
   const unAuthenticatedAxios = useMemo(() => {
     return axios.create({
       baseURL:
-        "https://vercel.com/rijoksds-projects/todo-app-mern-be/EJxzeXkP3HXM6YWB76GdS9pRREmc",
+        "https://todo-app-mern-be-git-main-rijoksds-projects.vercel.app",
     });
   }, []);
 
