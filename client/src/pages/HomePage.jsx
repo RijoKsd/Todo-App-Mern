@@ -7,7 +7,7 @@ import { Outlet } from "react-router-dom";
 const HomePage = () => {
   return (
     <div >
-      <Container>
+      <Container className="mt-0">
         <Row>
           <Col md={6}>
             <AboutContent />

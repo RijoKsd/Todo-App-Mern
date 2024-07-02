@@ -108,6 +108,7 @@ const RegisterForm = () => {
                 {...register("name")}
                 placeholder="Enter your name"
                 required
+                autoFocus
                 className="mb-3"
               />
               {errors.name && (
